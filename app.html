@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Spreader Math</title>
+<style>
+  :root { --accent: #3a5a7a; --warn: #a83232; }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 32px 16px 64px; background: #f6f7f9; color: #23272c;
+         font-family: Georgia, 'Times New Roman', serif; }
+  main { max-width: 680px; margin: 0 auto; }
+  h1 { color: var(--accent); font-size: 2.2rem; margin: 0 0 4px; }
+  .tag { font-style: italic; color: var(--accent); margin: 0 0 28px; }
+  .boundary { border-left: 4px solid var(--warn); background: #fdf1f1; padding: 16px 20px;
+              border-radius: 8px; margin: 0 0 28px; }
+  .boundary h2 { color: var(--warn); font-size: 1.1rem; margin: 0 0 8px; }
+  .boundary p { margin: 0; line-height: 1.5; }
+  .card { background: #fff; border: 1px solid #dde1e6; border-left: 4px solid var(--accent);
+          border-radius: 8px; padding: 20px 24px; margin: 0 0 24px; }
+  .card h2 { margin: 0 0 14px; font-size: 1.25rem; }
+  label { display: block; font-size: 0.95rem; margin: 10px 0 4px; }
+  input { width: 100%; max-width: 220px; padding: 8px 10px; font-size: 1rem;
+          border: 1px solid #c3cbd4; border-radius: 6px; background: #f1f3f6; }
+  .out { margin-top: 16px; font-size: 1.05rem; font-weight: bold; color: var(--accent);
+         line-height: 1.5; }
+  .out.err { color: var(--warn); }
+  footer { margin-top: 32px; font-size: 0.85rem; color: #7d848c; line-height: 1.5; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Spreader Math</h1>
+  <p class="tag">Bag truth, refill truth and walk truth - labeled norms, honest arithmetic.</p>
+
+  <div class="boundary">
+    <h2>The boundary</h2>
+    <p>Spreader Math keeps bag, refill and walking arithmetic only. It gives no verdicts about dial
+    settings or what your spreader should be set to - that call belongs to the spreader's manual and
+    the bag's label. Follow the product label exactly; the label is the law of the lawn.</p>
+  </div>
+
+  <div class="card">
+    <h2>The bag truth</h2>
+    <label for="b-lawn">Your lawn (square feet)</label>
+    <input id="b-lawn" type="number" step="any" value="5000">
+    <label for="b-cov">Claimed coverage per bag (square feet)</label>
+    <input id="b-cov" type="number" step="any" value="2500">
+    <p class="out" id="b-out"></p>
+  </div>
+
+  <div class="card">
+    <h2>The refill truth</h2>
+    <label for="r-lawn">Your lawn (square feet)</label>
+    <input id="r-lawn" type="number" step="any" value="5000">
+    <label for="r-rate">Label rate (pounds per 1,000 square feet)</label>
+    <input id="r-rate" type="number" step="any" value="4">
+    <label for="r-hop">Hopper capacity (pounds)</label>
+    <input id="r-hop" type="number" step="any" value="20">
+    <p class="out" id="r-out"></p>
+  </div>
+
+  <div class="card">
+    <h2>The walk truth</h2>
+    <label for="w-lawn">Your lawn (square feet)</label>
+    <input id="w-lawn" type="number" step="any" value="5000">
+    <label for="w-swath">Swath width (feet)</label>
+    <input id="w-swath" type="number" step="any" value="8">
+    <label for="w-speed">Your pace (feet per minute)</label>
+    <input id="w-speed" type="number" step="any" value="200">
+    <p class="out" id="w-out"></p>
+  </div>
+
+  <footer>
+    Every figure here is hypothetical arithmetic on labeled norms, not a statement about any real
+    product or spreader. <a href="index.html">About Spreader Math</a>
+  </footer>
+</main>
+<script src="engine.js"></script>
+<script>
+function num(id) { return parseFloat(document.getElementById(id).value); }
+function render(id, fn) {
+  const el = document.getElementById(id);
+  try {
+    el.textContent = fn();
+    el.classList.remove("err");
+  } catch (e) {
+    el.textContent = e.message;
+    el.classList.add("err");
+  }
+}
+function update() {
+  render("b-out", () => bagTruth(num("b-lawn"), num("b-cov")));
+  render("r-out", () => refillTruth(num("r-lawn"), num("r-rate"), num("r-hop")));
+  render("w-out", () => walkTruth(num("w-lawn"), num("w-swath"), num("w-speed")));
+}
+document.querySelectorAll("input").forEach(i => i.addEventListener("input", update));
+update();
+</script>
+</body>
+</html>
